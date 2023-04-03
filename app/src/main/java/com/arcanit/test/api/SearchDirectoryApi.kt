@@ -8,8 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.Url
 
 object RetrofitDirectoryServices {
 
@@ -35,34 +34,11 @@ object RetrofitDirectoryServices {
     val searchDirInside: SearchDirInside = retrofit.create(
         SearchDirInside::class.java
     )
-
-    val searchDirInsideDir: SearchDirInsideDir = retrofit.create(
-        SearchDirInsideDir::class.java
-    )
 }
 
 interface SearchDirInside {
-    @GET("/repos/{string1}/{string2}/{string3}")
-    suspend fun getResponseData(
-        @Path("string1") string1: String,
-        @Path("string2") string2: String,
-        @Path("string3") string3: String
-    ): List<DirectoryData>
-}
-
-interface SearchDirInsideDir {
-    @GET("/repos/{string1}/{string2}/{string3}/{string4}/{string5}/{string6}/{string7}/{string8}")
-    suspend fun getResponseData(
-        @Path("string1") string1: String,
-        @Path("string2") string2: String,
-        @Path("string3") string3: String,
-        @Path("string4") string4: String,
-        @Path("string5") string5: String,
-        @Path("string6") string6: String,
-        @Path("string7") string7: String,
-        @Path("string8") string8: String,
-        @Query("ref") string9: String,
-    ): List<DirectoryData>
+    @GET
+    suspend fun getResponseData(@Url url: String): List<DirectoryData>
 }
 
 

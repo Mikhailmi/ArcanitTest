@@ -1,6 +1,5 @@
 package com.arcanit.test.view.models
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,16 +29,11 @@ class DirectoryViewModel private constructor(
         started = SharingStarted.Eagerly,
         initialValue = _content.value
     )
-
     fun loadPremieres() {
         _isLoading.value = true
-        val listString = initialString?.let { parseUrl(it) } as MutableList<String>
         viewModelScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
-                if (listString[3]=="")
-                repository.getListDir(listString)
-                else
-                    repository.getListInsideDir(listString)
+                repository.getListDir(initialString!!.substring(23))
             }.fold(
                 onSuccess = {
                     _isFailure.value = ""
@@ -52,22 +46,6 @@ class DirectoryViewModel private constructor(
                     Log.d("ResponseRepoInsideData", it.message ?: "") }
             )
         }
-    }
-
-    @SuppressLint("SuspiciousIndentation")
-    private fun parseUrl(url: String): List<String> {
-        val firstResult = mutableListOf<String>()
-        for (s: String in url.split("https://api.github.com/repos/"))
-            firstResult.add(s)
-        val result = mutableListOf<String>()
-        for (s: String in firstResult[1].split("/"))
-        result.add(s)
-        if (result[3]!=""){
-            val listSplitQuestion = result.last().split("?")
-            result[result.lastIndex] = listSplitQuestion[0]
-            result.add(listSplitQuestion[1].split("=")[1])
-        }
-        return result
     }
 }
 
